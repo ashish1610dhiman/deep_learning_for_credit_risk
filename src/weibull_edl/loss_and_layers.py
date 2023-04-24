@@ -35,14 +35,14 @@ class DenseWeibullGamma(Layer):
 
 def weibull_NLL(y, alpha, beta,k, reduce=False):
     nll = -(log_tf(alpha) + log_tf(k) + (k-1)* log_tf(y)\
-            + alpha * log_tf(beta) - log_tf(y + beta))
+            + (alpha * log_tf(beta)) - (alpha+1)*log_tf(y + beta))
     return tf.reduce_mean(nll) if reduce else nll
 
 def ad_Reg(y,alpha, beta,k, reduce=True):
     pred_mean_log = tf.math.lgamma((k*alpha-1)/k) - log_tf(k) - ((alpha-1)/k)*log_tf(beta)
     # error = tf.stop_gradient(tf.abs(y-gamma))
     error = tf.abs(y-tf.math.exp(pred_mean_log))
-    evi = 10*(alpha + beta)
+    evi = (alpha)
     reg = error*evi
     return reg
 
