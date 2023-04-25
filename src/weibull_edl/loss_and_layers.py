@@ -21,7 +21,7 @@ class DenseWeibullGamma(Layer):
     def call(self, x):
         output = self.dense(x)
         logalpha, logbeta = tf.split(output, 2, axis=-1)
-        alpha = self.evidence(logalpha) + 1
+        alpha = self.evidence(logalpha) + 1.0
         beta = self.evidence(logbeta)
         return tf.concat([alpha, beta], axis=-1)
 
@@ -44,7 +44,7 @@ def ad_Reg(y,alpha, beta,k, reduce=True):
                 + (1/k)*log_tf(beta))
     # error = tf.stop_gradient(tf.abs(y-gamma))
     error = tf.abs(y-tf.math.exp(pred_mean_log))
-    evi = (alpha)
+    evi = (alpha-0.5*beta)
     reg = error*evi
     return reg
 
