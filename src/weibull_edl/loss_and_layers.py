@@ -44,7 +44,7 @@ def ad_Reg(y,alpha, beta,k, reduce=True):
                 + (1/k)*log_tf(beta))
     # error = tf.stop_gradient(tf.abs(y-gamma))
     error = tf.abs((y-tf.math.exp(pred_mean_log)))
-    evi = (alpha - 0.5*(beta))
+    evi = (alpha)
     reg = error*evi
     return reg
 
