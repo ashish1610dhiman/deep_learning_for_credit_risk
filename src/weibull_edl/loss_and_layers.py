@@ -21,7 +21,7 @@ class DenseWeibullGamma(Layer):
     def call(self, x):
         output = self.dense(x)
         logalpha, logbeta = tf.split(output, 2, axis=-1)
-        alpha = self.evidence(logalpha) + 1.0
+        alpha = self.evidence(logalpha) + 2.0
         beta = self.evidence(logbeta)
         return tf.concat([alpha, beta], axis=-1)
 
@@ -39,12 +39,11 @@ def weibull_NLL(y, alpha, beta,k, reduce=False):
     return tf.reduce_mean(nll) if reduce else nll
 
 def ad_Reg(y,alpha, beta,k, reduce=True):
-    # pred_mean_log = tf.math.lgamma((k*alpha-1)/k) - log_tf(k) - ((alpha-1)/k)*log_tf(beta)
     pred_mean_log = (tf.math.lgamma(1+ (1/k)) - tf.math.lgamma(alpha) + tf.math.lgamma(alpha-(1/k))\
                 + (1/k)*log_tf(beta))
     # error = tf.stop_gradient(tf.abs(y-gamma))
-    error = tf.abs((y-tf.math.exp(pred_mean_log)))
-    evi = (alpha/tf.math.pow(beta,2/k))
+    error = tf.stop_gradient(tf.abs((y-tf.math.exp(pred_mean_log)))) #don't train on abs error
+    evi = (alpha/beta)
     reg = error*evi
     return reg
 
