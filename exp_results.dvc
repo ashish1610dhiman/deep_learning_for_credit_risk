@@ -1,0 +1,5 @@
+outs:
+- md5: 1bd783e0157675e988a69619a40e9df3.dir
+  size: 535442968
+  nfiles: 181
+  path: exp_results
